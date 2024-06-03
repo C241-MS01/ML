@@ -7,59 +7,15 @@ Original file is located at
     https://colab.research.google.com/drive/1A7GdMFaP2rGm2sZLFD3jlezi27sPs7Xv
 """
 
-!wget "https://raw.githubusercontent.com/C241-MS01/ML/main/best%20(1).pt"
+#!wget "https://raw.githubusercontent.com/C241-MS01/ML/main/best%20(1).pt"
 
-!pip install -r https://raw.githubusercontent.com/ultralytics/yolov5/master/requirements.txt
+#!pip install -r https://raw.githubusercontent.com/ultralytics/yolov5/master/requirements.txt
 
-!pip install dill
+#!pip install dill
 
-import torch
-import cv2
 
-# Load YOLOv5 model
-model = torch.hub.load('ultralytics/yolov5', 'custom', path='/content/best (1).pt', force_reload=True)
-
-# Open video file
-cap = cv2.VideoCapture('/content/WIN_20240603_15_00_18_Pro.mp4')
-
-# Get video properties
-fps = int(cap.get(cv2.CAP_PROP_FPS))
-width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Define video writer
-out = cv2.VideoWriter('output_video.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
-
-# Process each frame of the video
-while cap.isOpened():
-    ret, frame = cap.read()
-    if not ret:
-        break
-
-    # Perform object detection on the frame
-    results = model(frame)
-
-    # Draw bounding boxes on the frame
-    for detection in results.xyxy[0]:
-        x1, y1, x2, y2, confidence, class_idx = detection
-        label = model.names[int(class_idx)]
-
-        # Convert coordinates to integers
-        x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-
-        # Draw bounding box
-        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-
-        # Add label and confidence score
-        text = f'{label}: {confidence:.2f}'
-        cv2.putText(frame, text, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
-    # Write output frame to video writer
-    out.write(frame)
-
-# Release video capture and writer
-cap.release()
-out.release()
 
 import torch
 import cv2
