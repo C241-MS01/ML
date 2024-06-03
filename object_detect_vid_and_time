@@ -1,0 +1,80 @@
+import torch
+import cv2
+
+# Load YOLOv5 model
+model = torch.hub.load('ultralytics/yolov5', 'custom', path='/content/best (1).pt', force_reload=True)
+
+# Open video file
+cap = cv2.VideoCapture('/content/WIN_20240603_15_00_18_Pro.mp4')
+
+# Get video properties
+fps = int(cap.get(cv2.CAP_PROP_FPS))
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+# Define video writer
+out = cv2.VideoWriter('output_video.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
+
+# Labels of the objects to be tracked
+object_labels = ['bottle', 'cigarette', 'phone', 'smoke', 'vape']  # Replace with your object labels
+
+# Variables to track detected object and its duration
+detected_object = None
+start_time = None
+total_duration = {label: 0 for label in object_labels}
+
+# Process each frame of the video
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+    
+    # Perform object detection on the frame
+    results = model(frame)
+    
+    # Flags to indicate if any object is detected in the current frame
+    object_detected = {label: False for label in object_labels}
+    
+    # Draw bounding boxes on the frame
+    for detection in results.xyxy[0]:
+        x1, y1, x2, y2, confidence, class_idx = detection
+        label = model.names[int(class_idx)]
+        
+        # Convert coordinates to integers
+        x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+        
+        # Draw bounding box
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        
+        # Add label and confidence score
+        text = f'{label}: {confidence:.2f}'
+        cv2.putText(frame, text, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        
+        # Track detected objects
+        if label in object_labels:
+            object_detected[label] = True
+    
+    # Update detected objects and their durations
+    for label in object_labels:
+        if object_detected[label]:
+            if detected_object != label:
+                detected_object = label
+                start_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000  # Convert milliseconds to seconds
+        else:
+            if detected_object == label:
+                end_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000  # Convert milliseconds to seconds
+                duration = end_time - start_time
+                total_duration[label] += duration
+                print(f'{label} detected for {duration:.2f} seconds')
+                detected_object = None
+
+    # Write output frame to video writer
+    out.write(frame)
+
+# Release video capture and writer
+cap.release()
+out.release()
+
+# Print total duration of the detected objects
+for label, duration in total_duration.items():
+    print(f'Total duration of {label}: {duration:.2f} seconds')
