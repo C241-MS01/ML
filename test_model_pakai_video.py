@@ -35,7 +35,7 @@ height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 out = cv2.VideoWriter('output_video.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
 # Labels of the objects to be tracked
-object_labels = ['bottle', 'cigarette', 'phone', 'smoke', 'vape']  # Replace with your object labels
+object_labels = ['bottle', 'cigarette', 'phone', 'smoke', 'vape']  # object labels
 
 # Variables to track detected object and its duration
 detected_object = None
