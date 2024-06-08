@@ -7,14 +7,13 @@ Original file is located at
     https://colab.research.google.com/drive/1rjf3jFtRXx8wjLtuq7uKLfm996Zckhrh
 """
 
-!pip install -r https://raw.githubusercontent.com/ultralytics/yolov5/master/requirements.txt
-
-!pip install dill
+"""!pip install -r https://raw.githubusercontent.com/ultralytics/yolov5/master/requirements.txt
+!pip install dill"""
 
 import torch
 import cv2
 
-def detect_objects_in_video(model_path, video_path, output_video_path, object_labels):
+def model_ML_DMS(model_path, video_path, output_video_path, object_labels):
     # Load YOLOv5 model
     model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path, force_reload=True)
 
@@ -92,13 +91,13 @@ def detect_objects_in_video(model_path, video_path, output_video_path, object_la
 
     return output_video_path, total_duration
 
-# Contoh penggunaan fungsi
+# Contoh pakai
 model_path = '/content/weightsbest (1).pt'
 video_path = '/content/WIN_20240603_15_00_18_Pro.mp4'
 output_video_path = 'output_video.mp4'
 object_labels = ['bottle', 'cigarette', 'phone', 'smoke', 'vape']
 
-output_video, durations = detect_objects_in_video(model_path, video_path, output_video_path, object_labels)
+output_video, durations = model_ML_DMS(model_path, video_path, output_video_path, object_labels)
 
 print(f'Output video saved to {output_video}')
 print('Durations for each object:')
