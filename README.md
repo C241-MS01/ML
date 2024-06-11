@@ -1,3 +1,3 @@
 - The dataset contain images of 5 classes: 'bottle', 'cigarette', 'phone', 'smoke', 'vape'
-- Link for the dataset that've been used: https://universe.roboflow.com/driver-wlf6m/driving-monitoring-system/dataset/2 and  https://universe.roboflow.com/cigaretteple-7m0hn/cig_70/dataset/7
+- Link for the dataset that've been used: https://universe.roboflow.com/driver-wlf6m/driving-monitoring-system/dataset/2
 - Model was trained in kaggle notebook and the dataset already in the input of kaggle notebook
